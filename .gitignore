@@ -1,0 +1,44 @@
+########################
+# Node.js
+########################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.env
+
+########################
+# C++
+########################
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+
+########################
+# Build folders
+########################
+build/
+dist/
+cmake-build-*/
+Debug/
+Release/
+
+########################
+# IDE / Editor
+########################
+.vscode/
+.idea/
+*.swp
+
+########################
+# OS files
+########################
+.DS_Store
+Thumbs.db
