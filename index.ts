@@ -83,7 +83,8 @@ app.get("/depth", (req: any, res: any) => {
     }
   } = {};
 
-  for (let i = 0; i < bids.length; i++) {
+  //Loops through bids, If price not seen → create entry, If seen → add quantities, Groups all buy orders by price
+  for (let i = 0; i < bids.length; i++) {  
     if (!depth[bids[i].price]) {
       depth[bids[i].price] = {
         quantity: bids[i].quantity,
@@ -94,7 +95,7 @@ app.get("/depth", (req: any, res: any) => {
     }
   }
 
-  for (let i = 0; i < asks.length; i++) {
+  for (let i = 0; i < asks.length; i++) {  //Same loop for sell orders
     if (!depth[asks[i].price]) {
       depth[asks[i].price] = {
         quantity: asks[i].quantity,
@@ -105,25 +106,25 @@ app.get("/depth", (req: any, res: any) => {
     }
   }
 
-  res.json({
+  res.json({  //Sends response
     depth
   })
 })
 
-app.get("/balance/:userId", (req, res) => {
+app.get("/balance/:userId", (req, res) => {  //This endpoint returns a user’s balance.
   const userId = req.params.userId;
-  const user = users.find(x => x.id === userId);
+  const user = users.find(x => x.id === userId);  //Searches the users array for that user
   if (!user) {
     return res.json({
       USD: 0,
       [TICKER]: 0
     })
   }
-  res.json({ balances: user.balances });
+  res.json({ balances: user.balances });  //If user exists, returns their actual balances
 })
 
 app.get("/quote", (req, res) => {
-  // TODO: Assignment
+  // TO DO: Fix the problem of backend going down
 });
 
 function flipBalance(userId1: string, userId2: string, quantity: number, price: number) {
