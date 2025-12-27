@@ -127,45 +127,47 @@ app.get("/quote", (req, res) => {
   // TO DO: Fix the problem of backend going down
 });
 
+//transfers assets and money between two users after a trade
 function flipBalance(userId1: string, userId2: string, quantity: number, price: number) {
-  let user1 = users.find(x => x.id === userId1);
-  let user2 = users.find(x => x.id === userId2);
-  if (!user1 || !user2) {
+  let user1 = users.find(x => x.id === userId1); //seller
+  let user2 = users.find(x => x.id === userId2); //buyer
+  if (!user1 || !user2) {   //safety check
     return;
   }
-  user1.balances[TICKER] -= quantity;
-  user2.balances[TICKER] += quantity;
-  user1.balances["USD"] += (quantity * price);
-  user2.balances["USD"] -= (quantity * price);
+  user1.balances[TICKER] -= quantity;  //seller loses assets
+  user2.balances[TICKER] += quantity;  //buyer gains assets
+  user1.balances["USD"] += (quantity * price);  //seller gets money
+  user2.balances["USD"] -= (quantity * price);  //buyer pays money
 }
 
+//matches a buy order with sell orders and returns unfilled quantity
 function fillOrders(side: string, price: number, quantity: number, userId: string): number {
-  let remainingQuantity = quantity;
-  if (side === "bid") {
+  let remainingQuantity = quantity;  //what’s left to fill
+  if (side === "bid") {                            //logic for buy orders
     for (let i = asks.length - 1; i >= 0; i--) {
-      if (asks[i].price > price) {
+      if (asks[i].price > price) {  //Skip asks that are too expensive
         continue;
       }
-      if (asks[i].quantity > remainingQuantity) {
+      if (asks[i].quantity > remainingQuantity) {  //One ask can fully fill the order
         asks[i].quantity -= remainingQuantity;
         flipBalance(asks[i].userId, userId, remainingQuantity, asks[i].price);
-        return 0;
-      } else {
+        return 0;   //Order fully filled
+      } else {      //Ask is fully consumed
         remainingQuantity -= asks[i].quantity;
         flipBalance(asks[i].userId, userId, asks[i].quantity, asks[i].price);
-        asks.pop();
+        asks.pop();  //Remove filled ask order
       }
     }
-  } else {
+  } else {   //Handles a sell order(ask)
     for (let i = bids.length - 1; i >= 0; i--) {
-      if (bids[i].price < price) {
+      if (bids[i].price < price) {  //Skip buyers offering less than seller’s price
         continue;
       }
-      if (bids[i].quantity > remainingQuantity) {
+      if (bids[i].quantity > remainingQuantity) {  //One bid can fully buy the sell order
         bids[i].quantity -= remainingQuantity;
         flipBalance(userId, bids[i].userId, remainingQuantity, price);
         return 0;
-      } else {
+      } else {  //Buyer order fully consumed
         remainingQuantity -= bids[i].quantity;
         flipBalance(userId, bids[i].userId, bids[i].quantity, price);
         bids.pop();
