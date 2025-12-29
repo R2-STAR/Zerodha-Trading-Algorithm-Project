@@ -5,15 +5,15 @@ This project implements a simplified exchange orderbook using Node.js. It simula
 
 ## Features
 
- - ### 📌 Limit Orders
+ - ### Limit Orders
    Users can place bid (buy) and ask (sell) limit orders at specific prices.
 
- - ### ⚡ Order Matching & Execution
+ - ### Order Matching & Execution
    Orders are automatically matched. Trades can be fully or partially filled based on available liquidity.
  - ### 📊 Depth Chart
     Query the current orderbook depth to view aggregated quantities at each price level.
    
- - ### 💰 User Balances
+ - ### User Balances
    Users can fetch their balances (base asset and USD) at any time.
 
 
